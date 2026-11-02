@@ -9,6 +9,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.*;
 import android.provider.OpenableColumns;
+import android.text.TextUtils;
 import android.view.*;
 import android.view.animation.PathInterpolator;
 import android.view.inputmethod.InputMethodManager;
