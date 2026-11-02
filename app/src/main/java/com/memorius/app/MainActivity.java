@@ -429,7 +429,7 @@ public class MainActivity extends Activity {
 
     void updateFilesText() {
         if (formFiles.isEmpty()) pickFiles.setText("Tap to choose files, or drop them here");
-        else pickFiles.setText(TextUtils.join(", ", formFiles));
+        else pickFiles.setText(String.join(", ", formFiles));
     }
 
     void addFile(Uri u) {
