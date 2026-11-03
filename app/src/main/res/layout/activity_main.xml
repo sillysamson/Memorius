@@ -1,58 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/root" android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="#38385A" android:fitsSystemWindows="true" android:clipChildren="false" android:clipToPadding="false">
+    android:id="@+id/root" android:tag="page" android:layout_width="match_parent" android:layout_height="match_parent"
+    android:fitsSystemWindows="true" android:clipChildren="false" android:clipToPadding="false">
     <ScrollView android:id="@+id/scroll" android:layout_width="match_parent" android:layout_height="match_parent"
         android:clipToPadding="false" android:paddingBottom="150dp" android:overScrollMode="never">
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="18dp">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingTop="12dp" android:text="Memorius" android:textSize="34sp" android:textStyle="bold" android:textColor="#FFFFFF"/>
-            <TextView android:id="@+id/sub" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="18dp" android:textSize="16sp" android:textColor="#B9B6D6"/>
+            <TextView android:tag="ink" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingTop="12dp" android:text="Memorius" android:textSize="34sp" android:textStyle="bold"/>
+            <TextView android:id="@+id/sub" android:tag="mute" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="18dp" android:textSize="16sp"/>
             <LinearLayout android:id="@+id/activeList" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"/>
-            <TextView android:id="@+id/finHead" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="18dp" android:layout_marginBottom="10dp" android:text="Finished" android:textSize="14sp" android:textStyle="bold" android:textColor="#B9B6D6" android:visibility="gone"/>
+            <TextView android:id="@+id/finHead" android:tag="mute" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="18dp" android:layout_marginBottom="10dp" android:text="@string/finished" android:textSize="14sp" android:textStyle="bold" android:visibility="gone"/>
             <LinearLayout android:id="@+id/finList" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"/>
         </LinearLayout>
     </ScrollView>
 
-    <LinearLayout android:id="@+id/dock" android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal" android:layout_marginBottom="24dp" android:orientation="horizontal" android:gravity="center_vertical" android:clipChildren="false" android:clipToPadding="false" android:minHeight="60dp">
-        <TextView android:id="@+id/addBtn" android:layout_width="wrap_content" android:layout_height="52dp" android:paddingLeft="30dp" android:paddingRight="30dp"
-            android:background="@drawable/bg_glass" android:gravity="center" android:text="add work" android:textColor="#FFFFFF" android:textSize="17sp" android:textStyle="bold"/>
-        <TextView android:id="@+id/selBtn" android:layout_width="52dp" android:layout_height="52dp" android:layout_marginStart="12dp"
-            android:background="@drawable/bg_glass_circle" android:gravity="center" android:text="✓" android:textColor="#FFFFFF" android:textSize="24sp" android:textStyle="bold"/>
+    <FrameLayout android:id="@+id/gearBtn" android:layout_width="52dp" android:layout_height="52dp" android:layout_gravity="top|end" android:layout_marginTop="14dp" android:layout_marginEnd="18dp">
+        <ImageView android:id="@+id/gearIcon" android:tag="ink" android:layout_width="26dp" android:layout_height="26dp" android:layout_gravity="center" android:src="@drawable/ic_gear"/>
+    </FrameLayout>
+
+    <LinearLayout android:id="@+id/dock" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_gravity="bottom"
+        android:layout_marginLeft="18dp" android:layout_marginRight="18dp" android:layout_marginBottom="24dp" android:orientation="horizontal" android:clipChildren="false">
+        <FrameLayout android:id="@+id/addBtn" android:layout_width="0dp" android:layout_weight="1" android:layout_height="52dp">
+            <TextView android:id="@+id/addLabel" android:tag="ink" android:layout_width="match_parent" android:layout_height="match_parent" android:gravity="center" android:text="@string/add_work" android:textSize="17sp" android:textStyle="bold"/>
+        </FrameLayout>
+        <FrameLayout android:id="@+id/selBtn" android:layout_width="52dp" android:layout_height="52dp" android:layout_marginStart="12dp">
+            <TextView android:tag="ink" android:layout_width="match_parent" android:layout_height="match_parent" android:gravity="center" android:text="✓" android:textSize="24sp" android:textStyle="bold"/>
+        </FrameLayout>
     </LinearLayout>
 
     <View android:id="@+id/scrim" android:layout_width="match_parent" android:layout_height="match_parent" android:background="#40000000" android:alpha="0" android:visibility="gone"/>
 
-    <LinearLayout android:id="@+id/bar" android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal" android:layout_marginBottom="24dp" android:orientation="horizontal" android:visibility="gone">
-        <TextView android:id="@+id/barRm" android:layout_width="wrap_content" android:layout_height="52dp" android:paddingLeft="28dp" android:paddingRight="28dp"
-            android:background="@drawable/bg_glass" android:gravity="center" android:text="Remove" android:textColor="#FFFFFF" android:textSize="16sp" android:textStyle="bold"/>
-        <TextView android:id="@+id/barCancel" android:layout_width="wrap_content" android:layout_height="52dp" android:layout_marginStart="10dp" android:paddingLeft="28dp" android:paddingRight="28dp"
-            android:background="@drawable/bg_card" android:gravity="center" android:text="Cancel" android:textColor="#FFFFFF" android:textSize="16sp" android:textStyle="bold"/>
+    <LinearLayout android:id="@+id/bar" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="bottom|center_horizontal" android:layout_marginBottom="24dp" android:orientation="horizontal" android:visibility="gone">
+        <FrameLayout android:id="@+id/barRm" android:layout_width="wrap_content" android:layout_height="52dp">
+            <TextView android:id="@+id/barRmLabel" android:tag="ink" android:layout_width="wrap_content" android:layout_height="match_parent" android:paddingLeft="28dp" android:paddingRight="28dp" android:gravity="center" android:text="@string/remove" android:textSize="16sp" android:textStyle="bold"/>
+        </FrameLayout>
+        <FrameLayout android:id="@+id/barCancel" android:layout_width="wrap_content" android:layout_height="52dp" android:layout_marginStart="10dp">
+            <TextView android:tag="ink" android:layout_width="wrap_content" android:layout_height="match_parent" android:paddingLeft="28dp" android:paddingRight="28dp" android:gravity="center" android:text="@string/cancel" android:textSize="16sp" android:textStyle="bold"/>
+        </FrameLayout>
     </LinearLayout>
 
-    <LinearLayout android:id="@+id/selPop" android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal" android:layout_marginBottom="92dp" android:orientation="vertical"
-        android:background="@drawable/bg_menu" android:padding="8dp" android:visibility="gone">
-        <TextView android:id="@+id/sAll" android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="14dp" android:text="Remove every finished work" android:textColor="#FFFFFF" android:textSize="15sp"/>
-        <TextView android:id="@+id/sFin" android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="14dp" android:text="Remove selected finished work" android:textColor="#FFFFFF" android:textSize="15sp"/>
-        <TextView android:id="@+id/sAct" android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="14dp" android:text="Ditch a few selected work" android:textColor="#FFFFFF" android:textSize="15sp"/>
-    </LinearLayout>
-
-    <FrameLayout android:id="@+id/sheet" android:layout_width="100dp" android:layout_height="100dp"
-        android:layout_gravity="top|start" android:visibility="gone" android:clipToOutline="true" android:elevation="12dp">
+    <FrameLayout android:id="@+id/sheet" android:layout_width="100dp" android:layout_height="100dp" android:layout_gravity="top|start" android:visibility="gone" android:clipToOutline="true" android:elevation="12dp">
         <ImageView android:id="@+id/backdrop" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitXY" android:visibility="gone"/>
         <View android:id="@+id/tint" android:layout_width="match_parent" android:layout_height="match_parent" android:visibility="gone"/>
         <include layout="@layout/sheet_form"/>
         <include layout="@layout/sheet_detail"/>
-        <TextView android:id="@+id/ghost" android:layout_width="match_parent" android:layout_height="match_parent" android:gravity="center"
-            android:text="add work" android:textColor="#FFFFFF" android:textSize="17sp" android:textStyle="bold" android:visibility="gone"/>
-        <LinearLayout android:id="@+id/menuPop" android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end" android:layout_marginBottom="86dp" android:layout_marginEnd="22dp"
-            android:orientation="vertical" android:background="@drawable/bg_menu" android:padding="8dp" android:visibility="gone">
-            <TextView android:id="@+id/mPost" android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="14dp" android:text="Postpone one day" android:textColor="#FFFFFF" android:textSize="15sp"/>
-            <TextView android:id="@+id/mAdv" android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="14dp" android:text="Advance one day" android:textColor="#FFFFFF" android:textSize="15sp"/>
-            <TextView android:id="@+id/mEdit" android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="14dp" android:text="Edit" android:textColor="#FFFFFF" android:textSize="15sp"/>
+        <TextView android:id="@+id/ghost" android:tag="ink" android:layout_width="match_parent" android:layout_height="match_parent" android:gravity="center" android:text="@string/add_work" android:textSize="17sp" android:textStyle="bold" android:visibility="gone"/>
+        <LinearLayout android:id="@+id/menuPop" android:tag="menu" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="bottom|end" android:layout_marginBottom="86dp" android:layout_marginEnd="22dp" android:orientation="vertical" android:padding="8dp" android:visibility="gone">
+            <TextView android:id="@+id/mPost" android:tag="ink" android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="14dp" android:text="@string/postpone" android:textSize="15sp"/>
+            <TextView android:id="@+id/mAdv" android:tag="ink" android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="14dp" android:text="@string/advance" android:textSize="15sp"/>
+            <TextView android:id="@+id/mEdit" android:tag="ink" android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="14dp" android:text="@string/edit" android:textSize="15sp"/>
+            <TextView android:id="@+id/mWord" android:tag="ink" android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="14dp" android:text="@string/new_word" android:textSize="15sp"/>
+            <TextView android:id="@+id/mPdf" android:tag="ink" android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="14dp" android:text="@string/new_pdf" android:textSize="15sp"/>
         </LinearLayout>
+    </FrameLayout>
+
+    <FrameLayout android:id="@+id/selPop" android:layout_width="100dp" android:layout_height="100dp" android:layout_gravity="top|start" android:visibility="gone">
+        <LinearLayout android:id="@+id/popOpts" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:padding="8dp" android:alpha="0">
+            <TextView android:id="@+id/sAll" android:tag="ink" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:gravity="center_vertical" android:paddingLeft="14dp" android:text="@string/m_all" android:textSize="15sp"/>
+            <TextView android:id="@+id/sFin" android:tag="ink" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:gravity="center_vertical" android:paddingLeft="14dp" android:text="@string/m_sel" android:textSize="15sp"/>
+            <TextView android:id="@+id/sAct" android:tag="ink" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:gravity="center_vertical" android:paddingLeft="14dp" android:text="@string/m_ditch" android:textSize="15sp"/>
+        </LinearLayout>
+        <TextView android:id="@+id/popCheck" android:tag="ink" android:layout_width="52dp" android:layout_height="52dp" android:layout_gravity="bottom|end" android:gravity="center" android:text="✓" android:textSize="24sp" android:textStyle="bold"/>
     </FrameLayout>
 </FrameLayout>

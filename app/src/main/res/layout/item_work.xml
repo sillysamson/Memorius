@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="160dp"
-    android:background="@drawable/bg_card" android:clipToOutline="true">
+    android:layout_width="match_parent" android:layout_height="160dp" android:tag="card" android:clipToOutline="true">
     <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
         android:orientation="vertical" android:paddingLeft="22dp" android:paddingRight="22dp" android:paddingTop="18dp">
-        <TextView android:id="@+id/iKind" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:textSize="13sp" android:textColor="#B9B6D6"/>
-        <TextView android:id="@+id/iTitle" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_marginTop="2dp" android:textSize="28sp" android:textStyle="bold" android:textColor="#FFFFFF" android:singleLine="true"/>
-        <TextView android:id="@+id/iNotes" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" android:textSize="15sp" android:textColor="#B9B6D6" android:maxLines="4"/>
+        <TextView android:id="@+id/iKind" android:tag="mute" android:layout_width="match_parent" android:layout_height="wrap_content" android:textSize="13sp"/>
+        <TextView android:id="@+id/iTitle" android:tag="ink" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="2dp" android:textSize="28sp" android:textStyle="bold" android:singleLine="true"/>
+        <TextView android:id="@+id/iNotes" android:tag="mute" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="8dp" android:textSize="15sp" android:maxLines="4"/>
     </LinearLayout>
-    <View android:layout_width="match_parent" android:layout_height="70dp" android:layout_gravity="bottom" android:background="@drawable/grad_fade"/>
+    <View android:tag="fade" android:layout_width="match_parent" android:layout_height="70dp" android:layout_gravity="bottom"/>
     <View android:id="@+id/iRing" android:layout_width="26dp" android:layout_height="26dp"
         android:layout_gravity="top|end" android:layout_marginTop="18dp" android:layout_marginEnd="22dp"
         android:background="@drawable/bg_ring" android:visibility="gone"/>
