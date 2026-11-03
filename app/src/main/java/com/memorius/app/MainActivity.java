@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.*;
 import android.database.Cursor;
 import android.graphics.*;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.*;
@@ -28,7 +29,7 @@ public class MainActivity extends Activity {
     }
 
     static final String[] MN = {"January","February","March","April","May","June","July","August","September","October","November","December"};
-    static final int PLUM = 0xF21A0F28, GLASS = 0x40FFFFFF;
+    static final int PLUM = 0xFF1A0F28, GLASS = 0x40FFFFFF, FROST = 0x991A0F28, TINT0 = 0x001A0F28;
 
     final ArrayList<Task> tasks = new ArrayList<>();
     final Handler h = new Handler(Looper.getMainLooper());
@@ -44,6 +45,8 @@ public class MainActivity extends Activity {
     Spinner typeSp;
     NumberPicker pm, pd, py;
     GradientDrawable sheetBg;
+    ImageView backdrop; View tint; ColorDrawable tintBg = new ColorDrawable(TINT0);
+    final boolean frost = Build.VERSION.SDK_INT >= 31;
     ValueAnimator rectAnim;
     Task cur, editing;
     long goneId = -1;
@@ -70,6 +73,7 @@ public class MainActivity extends Activity {
         subj = findViewById(R.id.subj); notes = findViewById(R.id.notes); typeSp = findViewById(R.id.typeSp);
         pm = findViewById(R.id.pm); pd = findViewById(R.id.pd); py = findViewById(R.id.py);
 
+        backdrop = findViewById(R.id.backdrop); tint = findViewById(R.id.tint); tint.setBackground(tintBg);
         sheetBg = new GradientDrawable(); sheetBg.setCornerRadius(dp(26)); sheetBg.setColor(PLUM);
         sheet.setBackground(sheetBg);
 
@@ -243,6 +247,7 @@ public class MainActivity extends Activity {
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) sheet.getLayoutParams();
         lp.gravity = Gravity.TOP | Gravity.START; lp.leftMargin = l; lp.topMargin = t; lp.width = w; lp.height = hh;
         sheet.setLayoutParams(lp);
+        backdrop.setTranslationX(-l); backdrop.setTranslationY(-t);
     }
 
     int lerp(int a, int b, float f) { return Math.round(a + (b - a) * f); }
@@ -268,6 +273,30 @@ public class MainActivity extends Activity {
         va.setDuration(dur); va.addUpdateListener(x -> sheetBg.setColor((int) x.getAnimatedValue())); va.start();
     }
 
+    void animTint(int from, int to, long dur) {
+        ValueAnimator va = ValueAnimator.ofObject(new ArgbEvaluator(), from, to);
+        va.setDuration(dur); va.addUpdateListener(x -> tintBg.setColor((int) x.getAnimatedValue())); va.start();
+    }
+
+    // snapshot of the list behind the card, blurred progressively = real frosted glass
+    void captureBackdrop() {
+        try {
+            int w = root.getWidth(), hh = root.getHeight();
+            Bitmap bm = Bitmap.createBitmap(w / 2, hh / 2, Bitmap.Config.ARGB_8888);
+            Canvas c = new Canvas(bm); c.scale(.5f, .5f); c.drawColor(0xFF38385A);
+            int[] a = new int[2], b = new int[2];
+            scroll.getLocationInWindow(a); root.getLocationInWindow(b);
+            c.translate(a[0] - b[0], a[1] - b[1]); scroll.draw(c);
+            backdrop.setImageBitmap(bm);
+            FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) backdrop.getLayoutParams();
+            lp.width = w; lp.height = hh; lp.gravity = Gravity.TOP | Gravity.START; backdrop.setLayoutParams(lp);
+            backdrop.setVisibility(View.VISIBLE); backdrop.setAlpha(0);
+            backdrop.animate().cancel(); backdrop.animate().alpha(1).setDuration(500).start();
+            tint.setVisibility(View.VISIBLE); tintBg.setColor(TINT0);
+            blurAnim(backdrop, 0f, 28f, 0, 700);
+        } catch (Exception e) { }
+    }
+
     // ---------- blur helpers (real blur on Android 12+, plain fade before) ----------
     void blurAnim(final View v, float from, float to, long delay, long dur) {
         if (Build.VERSION.SDK_INT < 31) return;
@@ -275,7 +304,7 @@ public class MainActivity extends Activity {
         a.setStartDelay(delay); a.setDuration(dur);
         a.addUpdateListener(x -> {
             float r = (float) x.getAnimatedValue();
-            v.setRenderEffect(r < .5f ? null : RenderEffect.createBlurEffect(r, r, Shader.TileMode.CLAMP));
+            v.setRenderEffect(r < .5f ? null : RenderEffect.createBlurEffect(r, r, Shader.TileMode.DECAL));
         });
         a.start();
     }
@@ -285,7 +314,12 @@ public class MainActivity extends Activity {
         if (Build.VERSION.SDK_INT >= 31) c.setRenderEffect(null);
     }
 
+    void clearBlur(View v) { if (Build.VERSION.SDK_INT >= 31) v.setRenderEffect(null); }
+
     void stagger(ViewGroup g, int skip) {
+        // blur the whole pane at once (no hard edges); only the shared-card case blurs per child
+        View bt = g == formContent ? formPane : (skip == 0 ? detailPane : null);
+        clearBlur(formPane); clearBlur(detailPane);
         for (int i = 0; i < g.getChildCount(); i++) {
             View c = g.getChildAt(i);
             reset(c);
@@ -293,8 +327,9 @@ public class MainActivity extends Activity {
             c.setAlpha(0); c.setTranslationY(dp(50));
             long d = 120 + 50L * (i - skip);
             c.animate().alpha(1).translationY(0).setStartDelay(d).setDuration(600).setInterpolator(spring).start();
-            blurAnim(c, 14f, 0f, d, 600);
+            if (bt == null) blurAnim(c, 10f, 0f, d, 600);
         }
+        if (bt != null) blurAnim(bt, 10f, 0f, 100, 800);
     }
 
     // ---------- sheet ----------
@@ -315,12 +350,15 @@ public class MainActivity extends Activity {
         Rect from = wasOpen ? rectOf(sheet) : rectOf(src);
         Rect to = peek ? center(340, 420) : center(360, 640);
         if (fromAdd) addBtn.setAlpha(0); else src.setVisibility(View.INVISIBLE);
-        selBtn.animate().alpha(0).setDuration(200).start();
+        if (frost && !wasOpen) captureBackdrop();
+        if (frost && wasOpen) { backdrop.animate().cancel(); backdrop.animate().alpha(1).setDuration(300).start(); tintBg.setColor(FROST); }
+        selBtn.animate().setStartDelay(0).alpha(0).setDuration(200).start();
         sheet.setVisibility(View.VISIBLE);
         setSheetRect(from.left, from.top, from.width(), from.height());
         scrim.setVisibility(View.VISIBLE); scrim.animate().alpha(1).setDuration(400).start();
         if (!wasOpen) {
             sheetBg.setColor(fromAdd ? GLASS : PLUM);
+            if (frost) animTint(TINT0, FROST, fromAdd ? 500 : 600);
             if (fromAdd) {
                 ghost.setVisibility(View.VISIBLE); ghost.setAlpha(1);
                 ghost.animate().alpha(0).setStartDelay(100).setDuration(250).start();
@@ -337,11 +375,13 @@ public class MainActivity extends Activity {
         hideMenu();
         ViewGroup g = pane == 0 ? formContent : detailPane;
         int skip = (pane == 1 && sharedMode) ? 3 : 0;
+        View bt = pane == 0 ? formPane : (skip == 0 ? detailPane : null);
         for (int i = skip; i < g.getChildCount(); i++) {
             View c = g.getChildAt(i);
             c.animate().cancel(); c.animate().alpha(0).translationY(dp(30)).setDuration(250).start();
-            blurAnim(c, 0f, 14f, 0, 250);
+            if (bt == null) blurAnim(c, 0f, 10f, 0, 250);
         }
+        if (bt != null) blurAnim(bt, 0f, 10f, 0, 250);
         scrim.animate().alpha(0).setDuration(450).withEndAction(() -> { if (!open) scrim.setVisibility(View.GONE); }).start();
         hideKb();
         final Task t = cur;
@@ -351,6 +391,7 @@ public class MainActivity extends Activity {
             if (open) return;
             View target = findCard(t);
             boolean toAdd = target == null;
+            if (frost) { animTint(FROST, TINT0, 450); backdrop.animate().cancel(); backdrop.animate().alpha(0).setDuration(450).start(); }
             Rect to = toAdd ? rectOf(addBtn) : rectOf(target);
             if (toAdd) {
                 ghost.setVisibility(View.VISIBLE); ghost.setAlpha(0); ghost.animate().alpha(1).setStartDelay(250).setDuration(250).start();
@@ -359,10 +400,12 @@ public class MainActivity extends Activity {
             }
             animRect(from, to, () -> {
                 sheet.setVisibility(View.GONE); ghost.setVisibility(View.GONE);
+                backdrop.setVisibility(View.GONE); tint.setVisibility(View.GONE); clearBlur(backdrop);
                 goneId = -1; cur = null; addBtn.setAlpha(1);
                 selBtn.animate().alpha(1).setStartDelay(0).setDuration(200).start();
                 for (int i = 0; i < formContent.getChildCount(); i++) reset(formContent.getChildAt(i));
                 for (int i = 0; i < detailPane.getChildCount(); i++) reset(detailPane.getChildAt(i));
+                clearBlur(formPane); clearBlur(detailPane);
                 render();
             });
         });
@@ -429,7 +472,7 @@ public class MainActivity extends Activity {
 
     void updateFilesText() {
         if (formFiles.isEmpty()) pickFiles.setText("Tap to choose files, or drop them here");
-        else pickFiles.setText(String.join(", ", formFiles));
+        else pickFiles.setText(TextUtils.join(", ", formFiles));
     }
 
     void addFile(Uri u) {
@@ -477,15 +520,15 @@ public class MainActivity extends Activity {
             selPop.setPivotX(r.centerX() - selPop.getLeft()); selPop.setPivotY(selPop.getHeight() + dp(38));
             selPop.animate().alpha(1).scaleX(1).scaleY(1).setDuration(500).setInterpolator(spring).start();
         });
-        addBtn.animate().translationX(dp(32)).setDuration(500).setInterpolator(spring).start();
-        selBtn.animate().alpha(0).scaleX(.5f).scaleY(.5f).setDuration(300).start();
+        selBtn.animate().setStartDelay(0).alpha(0).scaleX(.5f).scaleY(.5f).setDuration(120).start();
+        addBtn.animate().setStartDelay(60).translationX(dp(32)).setDuration(380).setInterpolator(spring).start();
     }
 
     void hideSelPop() {
         if (selPop.getVisibility() != View.VISIBLE) return;
         selPop.animate().alpha(0).scaleX(.3f).scaleY(.3f).setDuration(300).withEndAction(() -> selPop.setVisibility(View.GONE)).start();
-        addBtn.animate().translationX(0).setDuration(500).setInterpolator(spring).start();
-        selBtn.animate().alpha(1).scaleX(1).scaleY(1).setDuration(300).start();
+        addBtn.animate().setStartDelay(0).translationX(0).setDuration(380).setInterpolator(spring).start();
+        selBtn.animate().setStartDelay(300).alpha(1).scaleX(1).scaleY(1).setDuration(220).start();
     }
 
     boolean hit(View v, MotionEvent e) {

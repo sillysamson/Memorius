@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/detailPane" android:layout_width="match_parent" android:layout_height="match_parent"
-    android:orientation="vertical" android:paddingLeft="22dp" android:paddingRight="22dp" android:paddingTop="18dp" android:paddingBottom="22dp">
-    <TextView android:id="@+id/dKind" android:layout_width="match_parent" android:layout_height="wrap_content" android:textSize="13sp" android:textColor="#B9B6D6"/>
-    <TextView android:id="@+id/dTitle" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:textSize="28sp" android:textStyle="bold" android:textColor="#FFFFFF"/>
-    <TextView android:id="@+id/dNotes" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:textSize="15sp" android:textColor="#B9B6D6"/>
-    <TextView android:id="@+id/dFilesHead" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="22dp" android:text="Attached File(s)" android:textSize="17sp" android:textStyle="bold" android:textColor="#FFFFFF"/>
-    <LinearLayout android:id="@+id/dFiles" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginTop="6dp"/>
+    android:orientation="vertical" android:paddingTop="18dp" android:paddingBottom="8dp">
+    <TextView android:id="@+id/dKind" android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingLeft="22dp" android:paddingRight="22dp" android:textSize="13sp" android:textColor="#B9B6D6"/>
+    <TextView android:id="@+id/dTitle" android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingLeft="22dp" android:paddingRight="22dp" android:layout_marginTop="2dp" android:textSize="28sp" android:textStyle="bold" android:textColor="#FFFFFF"/>
+    <TextView android:id="@+id/dNotes" android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingLeft="22dp" android:paddingRight="22dp" android:layout_marginTop="8dp" android:textSize="15sp" android:textColor="#B9B6D6"/>
+    <TextView android:id="@+id/dFilesHead" android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingLeft="22dp" android:paddingRight="22dp" android:paddingTop="14dp" android:paddingBottom="14dp" android:layout_marginTop="8dp" android:text="Attached File(s)" android:textSize="17sp" android:textStyle="bold" android:textColor="#FFFFFF"/>
+    <LinearLayout android:id="@+id/dFiles" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:paddingLeft="22dp" android:paddingRight="22dp" android:paddingTop="2dp" android:paddingBottom="14dp"/>
     <Space android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"/>
-    <LinearLayout android:id="@+id/detailRow" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
+    <LinearLayout android:id="@+id/detailRow" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:paddingLeft="22dp" android:paddingRight="22dp" android:paddingTop="14dp" android:paddingBottom="14dp">
         <TextView android:id="@+id/finBtn" android:layout_width="wrap_content" android:layout_height="52dp" android:paddingLeft="32dp" android:paddingRight="32dp"
             android:background="@drawable/bg_green" android:gravity="center" android:text="Finish work" android:textColor="#FFFFFF" android:textSize="19sp" android:textStyle="bold"/>
         <Space android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1"/>

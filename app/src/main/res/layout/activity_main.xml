@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root" android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="#38385A" android:fitsSystemWindows="true">
+    android:background="#38385A" android:fitsSystemWindows="true" android:clipChildren="false" android:clipToPadding="false">
     <ScrollView android:id="@+id/scroll" android:layout_width="match_parent" android:layout_height="match_parent"
         android:clipToPadding="false" android:paddingBottom="150dp" android:overScrollMode="never">
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="18dp">
@@ -14,7 +14,7 @@
     </ScrollView>
 
     <LinearLayout android:id="@+id/dock" android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal" android:layout_marginBottom="24dp" android:orientation="horizontal">
+        android:layout_gravity="bottom|center_horizontal" android:layout_marginBottom="24dp" android:orientation="horizontal" android:gravity="center_vertical" android:clipChildren="false" android:clipToPadding="false" android:minHeight="60dp">
         <TextView android:id="@+id/addBtn" android:layout_width="wrap_content" android:layout_height="52dp" android:paddingLeft="30dp" android:paddingRight="30dp"
             android:background="@drawable/bg_glass" android:gravity="center" android:text="add work" android:textColor="#FFFFFF" android:textSize="17sp" android:textStyle="bold"/>
         <TextView android:id="@+id/selBtn" android:layout_width="52dp" android:layout_height="52dp" android:layout_marginStart="12dp"
@@ -41,6 +41,8 @@
 
     <FrameLayout android:id="@+id/sheet" android:layout_width="100dp" android:layout_height="100dp"
         android:layout_gravity="top|start" android:visibility="gone" android:clipToOutline="true" android:elevation="12dp">
+        <ImageView android:id="@+id/backdrop" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitXY" android:visibility="gone"/>
+        <View android:id="@+id/tint" android:layout_width="match_parent" android:layout_height="match_parent" android:visibility="gone"/>
         <include layout="@layout/sheet_form"/>
         <include layout="@layout/sheet_detail"/>
         <TextView android:id="@+id/ghost" android:layout_width="match_parent" android:layout_height="match_parent" android:gravity="center"
