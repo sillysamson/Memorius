@@ -221,7 +221,7 @@ public class MainActivity extends Activity {
             iv.setTranslationX(-r.left);
             iv.setTranslationY(-r.top);
             iv.setImageBitmap(bm);
-            if (iv.getRenderEffect() == null) iv.setRenderEffect(RenderEffect.createBlurEffect(30f, 30f, Shader.TileMode.CLAMP));
+            if (iv.getTag() == null) { iv.setRenderEffect(RenderEffect.createBlurEffect(30f, 30f, Shader.TileMode.CLAMP)); iv.setTag("fx"); }
         }
     }
 
