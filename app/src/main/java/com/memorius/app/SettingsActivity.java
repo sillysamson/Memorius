@@ -41,7 +41,7 @@ public class SettingsActivity extends Activity {
     LinearLayout card() {
         LinearLayout l = new LinearLayout(this);
         l.setOrientation(LinearLayout.VERTICAL);
-        S.round(l, S.card(this), dp(26));
+        S.round(l, S.card(this), dp(32));
         l.setPadding(dp(8), dp(8), dp(8), dp(8));
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
         lp.bottomMargin = dp(8);
@@ -66,6 +66,20 @@ public class SettingsActivity extends Activity {
         r.setOnClickListener(l);
         parent.addView(r, new LinearLayout.LayoutParams(-1, -2));
         return r;
+    }
+
+    void switchRow(LinearLayout parent, String label, final String key) {
+        LinearLayout r = new LinearLayout(this);
+        r.setGravity(Gravity.CENTER_VERTICAL);
+        r.setPadding(dp(14), 0, dp(14), 0);
+        TextView t = text(label, 16, false, S.ink(this));
+        r.addView(t, new LinearLayout.LayoutParams(0, dp(52), 1));
+        t.setGravity(Gravity.CENTER_VERTICAL);
+        Switch sw = new Switch(this);
+        sw.setChecked(S.p(this).getBoolean(key, false));
+        sw.setOnCheckedChangeListener((b, on) -> { S.p(this).edit().putBoolean(key, on).apply(); S.dirty = true; });
+        r.addView(sw);
+        parent.addView(r);
     }
 
     void build() {
@@ -176,6 +190,12 @@ public class SettingsActivity extends Activity {
                     | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION | Intent.FLAG_GRANT_PREFIX_URI_PERMISSION);
             startActivityForResult(i, 5);
         });
+
+        // experimental
+        section(getString(R.string.experimental));
+        c = card();
+        switchRow(c, getString(R.string.exp_side), "exp_side");
+        switchRow(c, getString(R.string.exp_group), "exp_group");
     }
 
     void changed() { S.dirty = true; recreate(); }

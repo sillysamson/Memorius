@@ -98,14 +98,14 @@ public class S {
         } else if ("mute".equals(t)) {
             if (v instanceof TextView) ((TextView) v).setTextColor(mute(c));
         } else if ("field".equals(t)) {
-            round(v, field(c), dp(c, 12));
+            round(v, field(c), dp(c, 10));
             if (v instanceof TextView) {
                 TextView tv = (TextView) v;
                 tv.setTextColor(ink(c));
                 tv.setHintTextColor((mute(c) & 0xFFFFFF) | 0x99000000);
             }
         } else if ("card".equals(t)) {
-            round(v, card(c), dp(c, 26));
+            round(v, card(c), dp(c, 32));
         } else if ("fade".equals(t)) {
             int cc = card(c);
             v.setBackground(new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, new int[]{cc & 0xFFFFFF, cc}));
@@ -118,7 +118,7 @@ public class S {
             v.setBackground(g);
             if (v instanceof TextView) ((TextView) v).setTextColor(mute(c));
         } else if ("menu".equals(t)) {
-            round(v, mix(card(c), light(c) ? 0xFF000000 : 0xFFFFFFFF, .08f), dp(c, 18));
+            round(v, mix(card(c), light(c) ? 0xFF000000 : 0xFFFFFFFF, .08f), dp(c, 24));
         }
         if (v instanceof ViewGroup) {
             ViewGroup g = (ViewGroup) v;

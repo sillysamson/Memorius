@@ -63,4 +63,46 @@
     <string name="pdf_readonly">Teks PDF tidak dapat diedit di aplikasi. Buat PDF baru sebagai gantinya.</string>
     <string name="select_text">Pilih teks dulu</string>
     <string name="notif_channel">Pengingat</string>
+    <string name="tab_card">Kartu</string>
+    <string name="tab_progress">Progres</string>
+    <string name="tab_schedule">Jadwal</string>
+    <string name="tab_note">Catatan</string>
+    <string name="notes_title">Catatan</string>
+    <string name="m_add">Tambah Tugas</string>
+    <string name="m_quick">Hapus Cepat</string>
+    <string name="m_selcard">Hapus Kartu Terpilih</string>
+    <string name="empty_cards">Hmm, sepertinya semua tugasmu sudah selesai.. atau belum?</string>
+    <string name="sched_empty">Belum ada jadwal</string>
+    <string name="st_finished">Selesai</string>
+    <string name="st_todo">Belum selesai</string>
+    <string name="st_overdue">Terlambat</string>
+    <string name="st_today">Tenggat hari ini</string>
+    <string name="g_today">Hari ini</string>
+    <string name="g_tomorrow">Besok</string>
+    <string name="g_overdue">Terlambat</string>
+    <string name="new_note">Catatan baru</string>
+    <string name="search_notes">Cari catatan</string>
+    <string name="no_notes">Belum ada catatan</string>
+    <string name="del_note">Hapus catatan ini?</string>
+    <string name="experimental">Eksperimental</string>
+    <string name="exp_side">Kartu menyamping</string>
+    <string name="exp_group">Kelompokkan kartu per tanggal</string>
+    <string name="export_docx">Ke .docx</string>
+    <string name="export_pdf">Ke PDF</string>
+    <string name="exported">Terekspor</string>
+    <string-array name="quotes">
+        <item>Carpe diem</item>
+        <item>Awal yang baik adalah setengah dari pekerjaan</item>
+        <item>Sedikit demi sedikit, lama-lama menjadi bukit</item>
+        <item>Selesai lebih baik daripada sempurna</item>
+        <item>Perjalanan seribu mil dimulai dari satu langkah</item>
+        <item>Keberuntungan berpihak pada yang siap</item>
+        <item>Pelan tapi pasti</item>
+        <item>Usaha hari ini adalah kemudahan esok</item>
+        <item>Jangan tunggu inspirasi; mulai saja</item>
+        <item>Buat berfungsi dulu, lalu perbaiki</item>
+        <item>Roma tidak dibangun dalam sehari</item>
+        <item>Waktu terbaik untuk memulai adalah sekarang</item>
+        <item>Satu hal dalam satu waktu</item>
+    </string-array>
 </resources>

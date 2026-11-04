@@ -63,4 +63,46 @@
     <string name="pdf_readonly">Le texte d\'un PDF ne peut pas être modifié dans l\'application. Créez plutôt un nouveau PDF.</string>
     <string name="select_text">Sélectionnez d\'abord du texte</string>
     <string name="notif_channel">Rappels</string>
+    <string name="tab_card">Cartes</string>
+    <string name="tab_progress">Progrès</string>
+    <string name="tab_schedule">Agenda</string>
+    <string name="tab_note">Notes</string>
+    <string name="notes_title">Notes</string>
+    <string name="m_add">Ajouter un devoir</string>
+    <string name="m_quick">Suppression rapide</string>
+    <string name="m_selcard">Supprimer les cartes choisies</string>
+    <string name="empty_cards">Hmm, on dirait que tu as tout fini.. ou pas ?</string>
+    <string name="sched_empty">Rien de prévu</string>
+    <string name="st_finished">Terminés</string>
+    <string name="st_todo">À faire</string>
+    <string name="st_overdue">En retard</string>
+    <string name="st_today">Pour aujourd\'hui</string>
+    <string name="g_today">Aujourd\'hui</string>
+    <string name="g_tomorrow">Demain</string>
+    <string name="g_overdue">En retard</string>
+    <string name="new_note">Nouvelle note</string>
+    <string name="search_notes">Rechercher des notes</string>
+    <string name="no_notes">Aucune note</string>
+    <string name="del_note">Supprimer cette note ?</string>
+    <string name="experimental">Expérimental</string>
+    <string name="exp_side">Cartes en défilement latéral</string>
+    <string name="exp_group">Grouper les cartes par date</string>
+    <string name="export_docx">Vers .docx</string>
+    <string name="export_pdf">Vers PDF</string>
+    <string name="exported">Exporté</string>
+    <string-array name="quotes">
+        <item>Carpe diem</item>
+        <item>Bien commencer, c\'est déjà à moitié fini</item>
+        <item>Petit à petit, l\'oiseau fait son nid</item>
+        <item>Fait vaut mieux que parfait</item>
+        <item>Un voyage de mille lieues commence par un pas</item>
+        <item>La chance sourit aux esprits préparés</item>
+        <item>Qui va lentement va sûrement</item>
+        <item>L\'effort d\'aujourd\'hui est la facilité de demain</item>
+        <item>N\'attendez pas l\'inspiration : commencez</item>
+        <item>Faites que ça marche, puis améliorez</item>
+        <item>Rome ne s\'est pas faite en un jour</item>
+        <item>Le meilleur moment pour commencer, c\'est maintenant</item>
+        <item>Une chose à la fois</item>
+    </string-array>
 </resources>

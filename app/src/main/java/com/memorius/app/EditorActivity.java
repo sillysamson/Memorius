@@ -27,7 +27,8 @@ public class EditorActivity extends Activity {
     EditText et, title;
     String mode;
     Uri uri;
-    boolean existing;
+    boolean existing, isNote;
+    long noteId = -1;
 
     @Override protected void attachBaseContext(Context b) { super.attachBaseContext(S.wrap(b)); }
 
@@ -37,6 +38,8 @@ public class EditorActivity extends Activity {
         super.onCreate(s);
         setTheme(S.light(this) ? R.style.AppThemeLight : R.style.AppTheme);
         mode = getIntent().getStringExtra("mode");
+        isNote = "note".equals(mode);
+        noteId = getIntent().getLongExtra("noteId", -1);
         String u = getIntent().getStringExtra("uri");
         String name = getIntent().getStringExtra("name");
         existing = u != null;
@@ -91,6 +94,7 @@ public class EditorActivity extends Activity {
             title.setText(dot > 0 ? name.substring(0, dot) : name);
             title.setEnabled(false);
         }
+        if (isNote && noteId > 0) for (Notes.Note n : Notes.list(this)) if (n.id == noteId) title.setText(n.title);
         top.addView(title, new LinearLayout.LayoutParams(0, -2, 1));
         if (!pdfView) {
             TextView save = new TextView(this);
@@ -132,6 +136,17 @@ public class EditorActivity extends Activity {
             lp.rightMargin = dp(8);
             tb.addView(b, lp);
         }
+        if (isNote) {
+            String[] ex = {getString(R.string.export_docx), getString(R.string.export_pdf)};
+            for (int i = 0; i < 2; i++) {
+                final boolean pdf = i == 1;
+                TextView b = btn(ex[i], v -> export(pdf));
+                b.setTextSize(13);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(dp(96), dp(44));
+                lp.rightMargin = dp(8);
+                tb.addView(b, lp);
+            }
+        }
         hs.addView(tb);
         root.addView(hs, new LinearLayout.LayoutParams(-1, dp(52)));
 
@@ -147,6 +162,7 @@ public class EditorActivity extends Activity {
         sv.addView(et, new FrameLayout.LayoutParams(-1, -1));
         root.addView(sv, new LinearLayout.LayoutParams(-1, 0, 1));
 
+        if (isNote && noteId > 0) et.setText(Notes.load(this, noteId));
         if (existing) {
             try (InputStream in = getContentResolver().openInputStream(uri)) {
                 et.setText(Docx.read(in));
@@ -247,8 +263,46 @@ public class EditorActivity extends Activity {
         }
     }
 
+    // ---------- notes ----------
+    void saveNote(boolean finishAfter) {
+        String t = title.getText().toString().trim();
+        String body = et.getText().toString().trim();
+        if (noteId <= 0 && t.isEmpty() && body.isEmpty()) { if (finishAfter) finish(); return; }
+        if (noteId <= 0) noteId = System.currentTimeMillis();
+        if (t.isEmpty()) t = getString(R.string.untitled);
+        Notes.save(this, noteId, t, new SpannableStringBuilder(et.getText()));
+        setResult(RESULT_OK);
+        if (finishAfter) { Toast.makeText(this, R.string.saved, Toast.LENGTH_SHORT).show(); finish(); }
+    }
+
+    @Override protected void onPause() {
+        super.onPause();
+        if (isNote && et != null) saveNote(false);
+    }
+
+    void export(boolean pdf) {
+        try {
+            String t = title.getText().toString().trim();
+            if (t.isEmpty()) t = getString(R.string.untitled);
+            Uri out = S.create(this, pdf ? "application/pdf" : DOCX, t + (pdf ? ".pdf" : ".docx"));
+            if (out == null) {
+                Toast.makeText(this, R.string.need_folder, Toast.LENGTH_LONG).show();
+                startActivity(new Intent(this, SettingsActivity.class));
+                return;
+            }
+            OutputStream os = getContentResolver().openOutputStream(out, "wt");
+            if (pdf) PdfMaker.write(os, new SpannableStringBuilder(et.getText()));
+            else Docx.write(os, new SpannableStringBuilder(et.getText()));
+            os.close();
+            Toast.makeText(this, R.string.exported, Toast.LENGTH_SHORT).show();
+        } catch (Exception ex) {
+            Toast.makeText(this, R.string.save_fail, Toast.LENGTH_LONG).show();
+        }
+    }
+
     // ---------- save ----------
     void save() {
+        if (isNote) { saveNote(true); return; }
         try {
             Uri out = uri;
             String name = null;

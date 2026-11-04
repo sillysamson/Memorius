@@ -63,4 +63,46 @@
     <string name="pdf_readonly">PDF text can\'t be edited in the app. Create a new PDF instead.</string>
     <string name="select_text">Select some text first</string>
     <string name="notif_channel">Reminders</string>
+    <string name="tab_card">Card</string>
+    <string name="tab_progress">Progress</string>
+    <string name="tab_schedule">Schedule</string>
+    <string name="tab_note">Note</string>
+    <string name="notes_title">Notes</string>
+    <string name="m_add">Add Work</string>
+    <string name="m_quick">Quick Remove</string>
+    <string name="m_selcard">Remove Selected Card</string>
+    <string name="empty_cards">Hmm, it seems like u did finish all ur work.. or are u?</string>
+    <string name="sched_empty">Nothing scheduled</string>
+    <string name="st_finished">Finished</string>
+    <string name="st_todo">To do</string>
+    <string name="st_overdue">Overdue</string>
+    <string name="st_today">Due today</string>
+    <string name="g_today">Today</string>
+    <string name="g_tomorrow">Tomorrow</string>
+    <string name="g_overdue">Overdue</string>
+    <string name="new_note">New note</string>
+    <string name="search_notes">Search notes</string>
+    <string name="no_notes">No notes yet</string>
+    <string name="del_note">Delete this note?</string>
+    <string name="experimental">Experimental</string>
+    <string name="exp_side">Sideways cards</string>
+    <string name="exp_group">Group cards by date</string>
+    <string name="export_docx">To .docx</string>
+    <string name="export_pdf">To PDF</string>
+    <string name="exported">Exported</string>
+    <string-array name="quotes">
+        <item>Carpe diem</item>
+        <item>Well begun is half done</item>
+        <item>Little by little, one travels far</item>
+        <item>Done is better than perfect</item>
+        <item>A journey of a thousand miles begins with a single step</item>
+        <item>Fortune favours the prepared mind</item>
+        <item>Slow and steady wins the race</item>
+        <item>Today\'s effort is tomorrow\'s ease</item>
+        <item>Don\'t wait for inspiration; begin</item>
+        <item>Make it work, then make it better</item>
+        <item>Rome wasn\'t built in a day</item>
+        <item>The best time to start is now</item>
+        <item>One thing at a time</item>
+    </string-array>
 </resources>
