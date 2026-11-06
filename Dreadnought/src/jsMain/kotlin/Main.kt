@@ -144,6 +144,13 @@ fun applyTheme(s: Settings) {
     document.querySelector("meta[name=theme-color]")?.setAttribute("content", c)
 }
 
+fun rememberTheme() {
+    val st = Store.st
+    val list = if (st.mode == "dark") darks else lights
+    localStorage.setItem("m.bg", list[st.theme.coerceIn(0, list.size - 1)].second)
+    localStorage.setItem("m.fg", if (st.mode == "dark") "#F1F1F1" else "#1A1A1A")
+}
+
 fun perm(): String =
     if (jsTypeOf(window.asDynamic().Notification) == "undefined") "denied"
     else window.asDynamic().Notification.permission as String
@@ -392,6 +399,7 @@ fun buildBanner() {
                 btn(t("apply"), "") {
                     Store.st = dr.copy()
                     Store.save()
+                    rememberTheme()
                     draft = Store.st.copy()
                     render()
                 }
@@ -1053,15 +1061,28 @@ fun renderSettings(scr: HTMLElement) {
 }
 
 // ---------- start ----------
+// Splash: brand mark only. Leaves as soon as the app is ready, but not before ~0.9 s
+// have passed since launch (counted from page start, so no extra delay on slow starts).
+fun hideSplash() {
+    val sp = document.getElementById("splash") ?: return
+    val wait = max(0.0, 900.0 - window.performance.now())
+    window.setTimeout({
+        sp.classList.add("out")
+        window.setTimeout({ sp.parentNode?.removeChild(sp) }, 450)
+    }, wait.toInt())
+}
+
 fun main() {
     Store.load()
     lang = Store.st.lang
     selDay = todayIdx()
     draft = Store.st.copy()
+    rememberTheme()
     initChrome()
     render()
     val nav = window.navigator.asDynamic()
     if (jsTypeOf(nav.serviceWorker) != "undefined") nav.serviceWorker.register("sw.js")
     tick()
     window.setInterval({ tick() }, 60000)
+    hideSplash()
 }
