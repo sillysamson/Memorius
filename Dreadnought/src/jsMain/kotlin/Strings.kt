@@ -17,7 +17,7 @@ val dayNames = listOf(
 
 val S = mapOf(
     "cards" to s("Cards", "Kartu", "Cartes", "البطاقات", "כרטיסים"),
-    "progress" to s("Progress", "Progres", "Progrès", "التقدم", "התקדמות"),
+    "progress" to s("Projects", "Proyek", "Projets", "المشاريع", "פרויקטים"),
     "schedule" to s("Schedule", "Jadwal", "Planning", "الجدول", "מערכת"),
     "settings" to s("Settings", "Setelan", "Réglages", "الإعدادات", "הגדרות"),
     "add" to s("Add", "Tambah", "Ajouter", "إضافة", "הוספה"),

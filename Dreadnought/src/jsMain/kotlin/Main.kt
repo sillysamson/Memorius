@@ -11,6 +11,10 @@ import org.w3c.files.File
 import org.w3c.files.FileList
 import org.w3c.files.FileReader
 import kotlin.js.Date
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.roundToInt
 
 // ---------- state ----------
 var tab = 0                 // 0 cards, 1 progress, 2 schedule, 3 settings
@@ -92,17 +96,28 @@ fun saveSoon() {
 }
 
 // ---------- layer ----------
+var layerTimer = 0
+var sink = 0
+fun reflow(e: HTMLElement) { sink = e.offsetHeight }
+
 fun layer(): HTMLElement {
+    window.clearTimeout(layerTimer)
     val l = el("layer")
+    l.onclick = null
     l.innerHTML = ""
-    l.className = "layer on"
+    l.className = "layer"
+    window.requestAnimationFrame {
+        reflow(l)
+        l.className = "layer on"
+    }
     return l
 }
 
 fun closeLayer() {
     val l = el("layer")
-    l.innerHTML = ""
     l.className = "layer"
+    window.clearTimeout(layerTimer)
+    layerTimer = window.setTimeout({ if (!l.classList.contains("on")) l.innerHTML = "" }, 320)
 }
 
 fun formSheet(rows: List<HTMLElement>, onSave: () -> Boolean) {
@@ -169,6 +184,160 @@ fun tick() {
 }
 
 // ---------- render ----------
+lateinit var track: HTMLElement
+lateinit var ind: HTMLElement
+lateinit var dotsBtn: HTMLElement
+lateinit var menuEl: HTMLElement
+lateinit var subEl: HTMLElement
+val panes = mutableListOf<HTMLElement>()
+val navBtns = mutableListOf<HTMLElement>()
+val navLabels = mutableListOf<HTMLElement>()
+var menuOpen = false
+val tabKeys = listOf("cards", "progress", "schedule", "settings")
+
+val icons = listOf(
+    """<svg viewBox="0 0 24 24"><rect x="4" y="8" width="16" height="11" rx="3"/><path d="M8 4.5h8"/></svg>""",
+    """<svg viewBox="0 0 24 24"><path d="M3.5 8a2 2 0 0 1 2-2h4l2 2.5h7a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/></svg>""",
+    """<svg viewBox="0 0 24 24"><rect x="4" y="5.5" width="16" height="14" rx="3"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/></svg>""",
+    """<svg viewBox="0 0 24 24"><path d="M4 8h9M17 8h3M4 16h3M11 16h9"/><circle cx="15" cy="8" r="2"/><circle cx="9" cy="16" r="2"/></svg>"""
+)
+val dotsSvg = """<svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="19" cy="12" r="1.9"/></svg>"""
+
+// pager moves toward -x in LTR and +x in RTL
+fun dirSign(): Double = if (lang >= 4) 1.0 else -1.0
+
+fun initChrome() {
+    subEl = h("div", "sub")
+    el("top").add(h("div", "brand", "Memorius"), subEl)
+
+    track = el("track")
+    for (i in 0..3) {
+        val p = h("section", "pane")
+        track.add(p)
+        panes.add(p)
+    }
+
+    val d = el("dock")
+    val pill = h("nav", "pill")
+    ind = h("div", "ind")
+    pill.add(ind)
+    for (i in 0..3) {
+        val b = h("button", "nav")
+        b.innerHTML = icons[i] + "<span></span>"
+        navLabels.add(b.querySelector("span") as HTMLElement)
+        b.onTap { go(i) }
+        navBtns.add(b)
+        pill.add(b)
+    }
+    dotsBtn = h("button", "dots").onTap { toggleMenu() }
+    dotsBtn.innerHTML = dotsSvg
+    dotsBtn.setAttribute("aria-label", "menu")
+    menuEl = h("div", "menu")
+    d.add(pill, dotsBtn, menuEl)
+
+    el("scrim").onTap { closeMenu() }
+    initSwipe()
+}
+
+// p = pager position as a float tab index (0..3); keeps pager, pill indicator and labels in sync
+fun syncPos(p: Double) {
+    track.style.transform = "translateX(${dirSign() * p * 100}%)"
+    ind.style.transform = "translateX(${-dirSign() * p * 100}%)"
+    val near = p.roundToInt().coerceIn(0, 3)
+    navBtns.forEachIndexed { i, b ->
+        if (i == near) b.classList.add("on") else b.classList.remove("on")
+    }
+}
+
+fun initSwipe() {
+    val pg = el("pager")
+    val dk = el("dock")
+    var sx = 0.0
+    var sy = 0.0
+    var dx = 0.0
+    var lastDx = 0.0
+    var lastT = 0.0
+    var vx = 0.0
+    var active = false
+    var locked = false
+    var swiped = false
+
+    fun stopDrag() {
+        locked = false
+        pg.classList.remove("drag")
+        dk.classList.remove("drag")
+    }
+
+    pg.addEventListener("pointerdown", { e ->
+        val d = e.asDynamic()
+        val tg = d.target as Element
+        active = openOpus == null && tg.closest("input,textarea,select") == null
+        locked = false
+        sx = d.clientX as Double
+        sy = d.clientY as Double
+        dx = 0.0
+        lastDx = 0.0
+        vx = 0.0
+        lastT = Date().getTime()
+    })
+
+    pg.addEventListener("pointermove", { e ->
+        if (active) {
+            val d = e.asDynamic()
+            dx = (d.clientX as Double) - sx
+            val dy = (d.clientY as Double) - sy
+            if (!locked && abs(dx) > 10 && abs(dx) > abs(dy) * 1.2) {
+                locked = true
+                pg.classList.add("drag")
+                dk.classList.add("drag")
+                pg.asDynamic().setPointerCapture(d.pointerId)
+            }
+            if (locked) {
+                val now = Date().getTime()
+                if (now > lastT) {
+                    vx = (dx - lastDx) / (now - lastT)
+                    lastT = now
+                    lastDx = dx
+                }
+                val w = pg.clientWidth.toDouble()
+                var p = tab + dx * dirSign() / w
+                if (p < 0) p *= 0.3
+                if (p > 3) p = 3 + (p - 3) * 0.3
+                syncPos(p)
+            }
+        }
+    })
+
+    pg.addEventListener("pointerup", {
+        if (active && locked) {
+            val w = pg.clientWidth.toDouble()
+            val flick = abs(vx) > 0.45 && abs(dx) > 24
+            var target = tab
+            if (abs(dx) > w * 0.25 || flick) {
+                val dir = if (flick) vx else dx
+                target = if (dir * dirSign() > 0) tab + 1 else tab - 1
+            }
+            target = target.coerceIn(0, 3)
+            stopDrag()
+            swiped = true
+            window.setTimeout({ swiped = false }, 120)
+            if (target != tab) go(target) else syncPos(tab.toDouble())
+        }
+        active = false
+    })
+
+    pg.addEventListener("pointercancel", {
+        if (active && locked) {
+            stopDrag()
+            syncPos(tab.toDouble())
+        }
+        active = false
+    })
+
+    // a swipe must never count as a tap
+    pg.addEventListener("click", { e -> if (swiped) e.stopPropagation() }, true)
+}
+
 fun render() {
     lang = Store.st.lang
     applyTheme(draft ?: Store.st)
@@ -176,51 +345,46 @@ fun render() {
     root.setAttribute("lang", langCodes[lang])
     root.setAttribute("dir", if (lang >= 4) "rtl" else "ltr")
 
-    val top = el("top")
-    top.innerHTML = ""
-    top.add(h("div", "brand", "Memorius"), h("div", "sub", t(listOf("cards", "progress", "schedule", "settings")[tab])))
-
-    buildDock()
-    buildBanner()
-
-    val scr = el("screen")
-    scr.innerHTML = ""
-    when (tab) {
-        0 -> renderCards(scr)
-        1 -> renderProgress(scr)
-        2 -> renderSchedule(scr)
-        else -> renderSettings(scr)
+    tabKeys.forEachIndexed { i, k -> navLabels[i].textContent = t(k) }
+    val title = t(tabKeys[tab])
+    if (subEl.textContent != title) {
+        subEl.textContent = title
+        subEl.classList.remove("in")
+        reflow(subEl)
+        subEl.classList.add("in")
     }
+
+    panes.forEachIndexed { i, p ->
+        p.innerHTML = ""
+        when (i) {
+            0 -> renderCards(p)
+            1 -> renderProgress(p)
+            2 -> renderSchedule(p)
+            else -> renderSettings(p)
+        }
+        if (i == tab) p.removeAttribute("inert") else p.setAttribute("inert", "")
+    }
+
+    val dk = el("dock")
+    if (tab == 3) dk.classList.add("merged") else dk.classList.remove("merged")
+    buildBanner()
+    syncPos(tab.toDouble())
 }
 
 fun go(i: Int) {
+    closeMenu()
     tab = i
     mode = ""
     openOpus = null
-    draft = if (i == 3) Store.st.copy() else null
+    draft = Store.st.copy()
     render()
-}
-
-fun buildDock() {
-    val d = el("dock")
-    d.innerHTML = ""
-    d.className = if (tab == 3) "merged" else ""
-    val pill = h("nav", "pill")
-    listOf("cards", "progress", "schedule", "settings").forEachIndexed { i, k ->
-        pill.add(btn(t(k), if (i == tab) "nav on" else "nav") { go(i) })
-    }
-    val dots = btn("⋯", "dots") { openMenu() }
-    dots.setAttribute("aria-label", "menu")
-    d.add(pill, dots)
 }
 
 fun buildBanner() {
     val b = el("banner")
-    b.innerHTML = ""
-    b.className = "banner"
     val dr = draft
     if (tab == 3 && dr != null && dr != Store.st) {
-        b.className = "banner on"
+        b.innerHTML = ""
         b.add(
             h("span", "", t("applyAsk")),
             h("div", "btns").add(
@@ -233,32 +397,44 @@ fun buildBanner() {
                 }
             )
         )
-        return
-    }
-    if (mode != "") {
         b.className = "banner on"
+    } else if (mode != "") {
+        b.innerHTML = ""
         b.add(h("span", "", t(if (mode == "delete") "tapDel" else "tapMove")), btn(t("ok"), "") { mode = ""; render() })
+        b.className = "banner on"
+    } else {
+        b.className = "banner"
     }
 }
 
-fun openMenu() {
+fun closeMenu() {
+    if (!menuOpen) return
+    menuOpen = false
+    menuEl.classList.remove("open")
+    dotsBtn.classList.remove("open")
+    el("scrim").classList.remove("on")
+}
+
+fun toggleMenu() {
+    if (menuOpen) { closeMenu(); return }
     if (tab == 3 || openOpus != null) return
     val items = mutableListOf<Pair<String, () -> Unit>>()
     when (tab) {
-        0 -> items.add(t("add") to { closeLayer(); addCard() })
+        0 -> items.add(t("add") to { addCard() })
         1 -> {
-            items.add(t("write") to { closeLayer(); writeOpus() })
-            items.add(t("import") to { closeLayer(); importOpus() })
+            items.add(t("write") to { writeOpus() })
+            items.add(t("import") to { importOpus() })
         }
-        else -> items.add(t("add") to { closeLayer(); addSlot() })
+        else -> items.add(t("add") to { addSlot() })
     }
-    items.add(t("delete") to { closeLayer(); mode = "delete"; render() })
-    items.add(t("rearrange") to { closeLayer(); mode = "move"; render() })
-    val l = layer()
-    l.onTap { closeLayer() }
-    val box = h("div", "sheet menu").stop()
-    items.forEach { (label, f) -> box.add(btn(label, "item", f)) }
-    l.add(box)
+    items.add(t("delete") to { mode = "delete"; render() })
+    items.add(t("rearrange") to { mode = "move"; render() })
+    menuEl.innerHTML = ""
+    items.forEach { (label, f) -> menuEl.add(btn(label, "item") { closeMenu(); f() }) }
+    menuOpen = true
+    menuEl.classList.add("open")
+    dotsBtn.classList.add("open")
+    el("scrim").classList.add("on")
 }
 
 fun <T> moveBtns(list: MutableList<T>, i: Int, rev: Boolean, same: (T, T) -> Boolean = { _, _ -> true }): HTMLElement {
@@ -296,21 +472,29 @@ fun renderCards(scr: HTMLElement) {
     if (mode == "") scr.add(h("div", "hint", t("holdHint")))
 }
 
+fun cardHead(c: Card, ci: Int): HTMLElement {
+    val head = h("div", "row")
+    if (Store.st.cb) head.add(h("span", "sym", symbols[ci]))
+    head.add(h("b", "", c.subject), h("span", "tag", t(c.type)))
+    return head
+}
+
 fun cardView(c: Card, i: Int): HTMLElement {
     val ci = c.color.coerceIn(0, 5)
     val v = h("div", if (c.done) "card done" else "card")
     v.style.setProperty("--c", palette()[ci])
-    val head = h("div", "row")
-    if (Store.st.cb) head.add(h("span", "sym", symbols[ci]))
-    head.add(h("b", "", c.subject), h("span", "tag", t(c.type)))
+    val head = cardHead(c, ci)
     when (mode) {
         "delete" -> v.onTap {
             if (window.confirm(t("confirmDel"))) { Store.cards.remove(c); Store.save(); render() }
         }
         "move" -> head.add(moveBtns(Store.cards, i, true))
         else -> {
-            head.add(btn("✓", "check") { c.done = !c.done; Store.save(); render() })
-            longPress(v) { preview(c) }
+            var fired = false
+            head.add(btn("✓", "check") { c.done = !c.done; Store.save(); render() }.stop())
+            v.addEventListener("pointerdown", { fired = false })
+            longPress(v) { fired = true; openCardView(c, v, false) }
+            v.onTap { if (fired) fired = false else openCardView(c, v, true) }
         }
     }
     v.add(head, h("div", "due", fmtDue(c)))
@@ -319,7 +503,19 @@ fun cardView(c: Card, i: Int): HTMLElement {
 
 fun longPress(v: HTMLElement, f: () -> Unit) {
     var timer = 0
-    v.addEventListener("pointerdown", { timer = window.setTimeout({ f() }, 450) })
+    var sx = 0.0
+    var sy = 0.0
+    v.addEventListener("pointerdown", { e ->
+        val d = e.asDynamic()
+        sx = d.clientX as Double
+        sy = d.clientY as Double
+        window.clearTimeout(timer)
+        timer = window.setTimeout({ f() }, 450)
+    })
+    v.addEventListener("pointermove", { e ->
+        val d = e.asDynamic()
+        if (abs((d.clientX as Double) - sx) > 8 || abs((d.clientY as Double) - sy) > 8) window.clearTimeout(timer)
+    })
     val cancel: (Event) -> Unit = { window.clearTimeout(timer) }
     v.addEventListener("pointerup", cancel)
     v.addEventListener("pointerleave", cancel)
@@ -336,17 +532,56 @@ fun fileLink(f: FileRef): HTMLElement {
     return a
 }
 
-fun preview(c: Card) {
+// The expanded view and the preview both grow out of the tapped card itself.
+fun openCardView(c: Card, v: HTMLElement, full: Boolean) {
+    val r = v.getBoundingClientRect()
     val l = layer()
-    l.onTap { closeLayer() }
-    val s = h("div", "sheet preview").stop()
-    s.style.setProperty("--c", palette()[c.color.coerceIn(0, 5)])
-    s.add(h("h2", "", c.subject), h("div", "due", fmtDue(c)), h("p", "note", if (c.note.isEmpty()) "—" else c.note))
+    val ci = c.color.coerceIn(0, 5)
+    val x = h("div", "xcard")
+    x.style.setProperty("--c", palette()[ci])
+    x.add(cardHead(c, ci), h("div", "due", fmtDue(c)))
+    val extra = h("div", "extra")
+    extra.add(h("p", if (full) "note" else "note clamp", if (c.note.isEmpty()) "—" else c.note))
     if (c.files.isNotEmpty()) {
-        s.add(h("div", "lbl", t("files")))
-        c.files.forEach { s.add(fileLink(it)) }
+        if (full) {
+            extra.add(h("div", "lbl", t("files")))
+            c.files.forEach { extra.add(fileLink(it)) }
+        } else {
+            extra.add(h("div", "due", t("files") + ": " + c.files.size))
+        }
     }
-    l.add(s)
+    x.add(extra)
+
+    // start exactly on top of the original card
+    x.style.left = "${r.left}px"
+    x.style.width = "${r.width}px"
+    x.style.top = "${r.top}px"
+    l.add(x)
+    val vh = window.innerHeight.toDouble()
+    val th = min(max(x.offsetHeight.toDouble(), r.height), vh - 48.0)
+    x.style.height = "${r.height}px"
+    reflow(x)
+    val top = max(24.0, (vh - th) / 2)
+    v.style.visibility = "hidden"
+    window.requestAnimationFrame {
+        x.style.top = "${top}px"
+        x.style.height = "${th}px"
+        x.classList.add("lift")
+    }
+
+    fun close() {
+        x.classList.remove("lift")
+        val r2 = v.getBoundingClientRect()
+        x.style.top = "${r2.top}px"
+        x.style.height = "${r2.height}px"
+        closeLayer()
+        window.setTimeout({ v.style.visibility = "" }, 300)
+    }
+    l.onclick = { close() }
+    x.addEventListener("click", { e ->
+        e.stopPropagation()
+        if ((e.asDynamic().target as Element).closest("a") == null) close()
+    })
 }
 
 fun readFiles(list: FileList?, into: MutableList<FileRef>, done: () -> Unit) {
@@ -822,6 +1057,8 @@ fun main() {
     Store.load()
     lang = Store.st.lang
     selDay = todayIdx()
+    draft = Store.st.copy()
+    initChrome()
     render()
     val nav = window.navigator.asDynamic()
     if (jsTypeOf(nav.serviceWorker) != "undefined") nav.serviceWorker.register("sw.js")
