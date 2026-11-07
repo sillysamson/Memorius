@@ -1,6 +1,8 @@
-<string name="m_selcard">Select card</string>
-<string name="attached">Attached</string>
-<string name="finish_work">Finish work</string>
-<string name="type">Type</string><resources>
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
     <string name="app_name">Memorius</string>
+    <string name="m_selcard">Select card</string>
+    <string name="attached">Attached</string>
+    <string name="finish_work">Finish work</string>
+    <string name="type">Type</string>
 </resources>
