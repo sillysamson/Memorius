@@ -6,3 +6,28 @@
     <string name="finish_work">Finish work</string>
     <string name="type">Type</string>
 </resources>
+<string name="empty_cards">No cards yet</string>
+<string name="finished">Finished</string>
+
+<string name="tab_card">Card</string>
+<string name="tab_progress">Projects</string>
+<string name="tab_schedule">Schedule</string>
+<string name="tab_note">Settings</string>
+
+<string name="remove">Remove</string>
+<string name="cancel">Cancel</string>
+<string name="m_add">Add work</string>
+
+<string name="postpone">Postpone</string>
+<string name="advance">Advance</string>
+<string name="edit">Edit</string>
+
+<string name="new_word">New document</string>
+<string name="new_pdf">New PDF</string>
+<string name="m_quick">Quick add</string>
+
+<string name="subject">Subject</string>
+<string name="subject_hint">Enter subject name</string>
+<string name="deadline">Deadline</string>
+<string name="notes">Notes</string>
+
