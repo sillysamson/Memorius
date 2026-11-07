@@ -1,0 +1,43 @@
+name: Build Memorius
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.10.2
+      - name: Build
+        run: gradle jsBrowserDistribution --no-daemon
+      - uses: actions/upload-artifact@v4
+        with:
+          name: memorius-web
+          path: build/dist/js/productionExecutable
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/dist/js/productionExecutable
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.d.outputs.page_url }}
+    steps:
+      - id: d
+        uses: actions/deploy-pages@v4

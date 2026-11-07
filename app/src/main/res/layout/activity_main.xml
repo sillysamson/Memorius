@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root" android:tag="page" android:layout_width="match_parent" android:layout_height="match_parent"
+    android:fitsSystemWindows="true" android:clipChildren="false" android:clipToPadding="false">
+    <FrameLayout android:id="@+id/content" android:layout_width="match_parent" android:layout_height="match_parent">
+        <ScrollView android:id="@+id/scroll" android:layout_width="match_parent" android:layout_height="match_parent"
+            android:clipToPadding="false" android:paddingBottom="170dp" android:overScrollMode="never">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="18dp" android:paddingTop="56dp">
+                <TextView android:tag="ink" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Memorius" android:textSize="40sp" android:textStyle="bold"/>
+                <TextView android:id="@+id/quote" android:tag="ink" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="22dp" android:textSize="21sp"/>
+                <TextView android:id="@+id/emptyMsg" android:tag="mute" android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:paddingTop="150dp" android:paddingLeft="24dp" android:paddingRight="24dp" android:text="@string/empty_cards" android:textSize="16sp" android:visibility="gone"/>
+                <LinearLayout android:id="@+id/activeList" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"/>
+                <HorizontalScrollView android:id="@+id/hScroll" android:layout_width="match_parent" android:layout_height="wrap_content" android:scrollbars="none" android:overScrollMode="never" android:clipToPadding="false" android:visibility="gone">
+                    <LinearLayout android:id="@+id/hRow" android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal"/>
+                </HorizontalScrollView>
+                <TextView android:id="@+id/finHead" android:tag="mute" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="18dp" android:layout_marginBottom="10dp" android:text="@string/finished" android:textSize="14sp" android:textStyle="bold" android:visibility="gone"/>
+                <LinearLayout android:id="@+id/finList" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"/>
+            </LinearLayout>
+        </ScrollView>
+        <ScrollView android:id="@+id/progScroll" android:layout_width="match_parent" android:layout_height="match_parent" android:clipToPadding="false" android:paddingBottom="170dp" android:overScrollMode="never" android:visibility="gone">
+            <LinearLayout android:id="@+id/progBox" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="18dp" android:paddingTop="56dp"/>
+        </ScrollView>
+        <ScrollView android:id="@+id/schedScroll" android:layout_width="match_parent" android:layout_height="match_parent" android:clipToPadding="false" android:paddingBottom="170dp" android:overScrollMode="never" android:visibility="gone">
+            <LinearLayout android:id="@+id/schedBox" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="18dp" android:paddingTop="56dp"/>
+        </ScrollView>
+        <ScrollView android:id="@+id/noteScroll" android:layout_width="match_parent" android:layout_height="match_parent" android:clipToPadding="false" android:paddingBottom="170dp" android:overScrollMode="never" android:visibility="gone">
+            <LinearLayout android:id="@+id/noteBox" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="18dp" android:paddingTop="56dp"/>
+        </ScrollView>
+    </FrameLayout>
+
+    <FrameLayout android:id="@+id/gearBtn" android:layout_width="52dp" android:layout_height="52dp" android:layout_gravity="top|end" android:layout_marginTop="60dp" android:layout_marginEnd="18dp">
+        <ImageView android:id="@+id/gearIcon" android:tag="ink" android:layout_width="26dp" android:layout_height="26dp" android:layout_gravity="center" android:src="@drawable/ic_gear"/>
+    </FrameLayout>
+
+    <LinearLayout android:id="@+id/dock" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_gravity="bottom"
+        android:layout_marginLeft="18dp" android:layout_marginRight="18dp" android:layout_marginBottom="24dp" android:orientation="horizontal" android:clipChildren="false">
+        <FrameLayout android:id="@+id/navBar" android:layout_width="0dp" android:layout_weight="1" android:layout_height="64dp">
+            <View android:id="@+id/navHi" android:layout_width="60dp" android:layout_height="52dp" android:layout_marginTop="6dp"/>
+            <LinearLayout android:id="@+id/navRow" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="horizontal">
+            <LinearLayout android:id="@+id/navCard" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+                <ImageView android:id="@+id/navCardIc" android:tag="ink" android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_tab_card"/>
+                <TextView android:id="@+id/navCardTx" android:tag="ink" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:text="@string/tab_card" android:textSize="11sp" android:textStyle="bold" android:maxLines="1"/>
+            </LinearLayout>
+            <LinearLayout android:id="@+id/navProg" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+                <ImageView android:id="@+id/navProgIc" android:tag="ink" android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_tab_progress"/>
+                <TextView android:id="@+id/navProgTx" android:tag="ink" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:text="@string/tab_progress" android:textSize="11sp" android:textStyle="bold" android:maxLines="1"/>
+            </LinearLayout>
+            <LinearLayout android:id="@+id/navSched" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+                <ImageView android:id="@+id/navSchedIc" android:tag="ink" android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_tab_schedule"/>
+                <TextView android:id="@+id/navSchedTx" android:tag="ink" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:text="@string/tab_schedule" android:textSize="11sp" android:textStyle="bold" android:maxLines="1"/>
+            </LinearLayout>
+            <LinearLayout android:id="@+id/navNote" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+                <ImageView android:id="@+id/navNoteIc" android:tag="ink" android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_tab_note"/>
+                <TextView android:id="@+id/navNoteTx" android:tag="ink" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:text="@string/tab_note" android:textSize="11sp" android:textStyle="bold" android:maxLines="1"/>
+            </LinearLayout>
+            </LinearLayout>
+        </FrameLayout>
+        <FrameLayout android:id="@+id/moreBtn" android:layout_width="64dp" android:layout_height="64dp" android:layout_marginStart="12dp">
+            <TextView android:tag="ink" android:layout_width="match_parent" android:layout_height="match_parent" android:gravity="center" android:text="•••" android:textSize="22sp" android:textStyle="bold"/>
+        </FrameLayout>
+    </LinearLayout>
+
+    <View android:id="@+id/scrim" android:layout_width="match_parent" android:layout_height="match_parent" android:background="#40000000" android:alpha="0" android:visibility="gone"/>
+
+    <LinearLayout android:id="@+id/bar" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="bottom|center_horizontal" android:layout_marginBottom="24dp" android:orientation="horizontal" android:visibility="gone">
+        <FrameLayout android:id="@+id/barRm" android:layout_width="wrap_content" android:layout_height="56dp">
+            <TextView android:id="@+id/barRmLabel" android:tag="ink" android:layout_width="wrap_content" android:layout_height="match_parent" android:paddingLeft="28dp" android:paddingRight="28dp" android:gravity="center" android:text="@string/remove" android:textSize="16sp" android:textStyle="bold"/>
+        </FrameLayout>
+        <FrameLayout android:id="@+id/barCancel" android:layout_width="wrap_content" android:layout_height="56dp" android:layout_marginStart="10dp">
+            <TextView android:tag="ink" android:layout_width="wrap_content" android:layout_height="match_parent" android:paddingLeft="28dp" android:paddingRight="28dp" android:gravity="center" android:text="@string/cancel" android:textSize="16sp" android:textStyle="bold"/>
+        </FrameLayout>
+    </LinearLayout>
+
+    <FrameLayout android:id="@+id/sheet" android:layout_width="100dp" android:layout_height="100dp" android:layout_gravity="top|start" android:visibility="gone" android:clipToOutline="true" android:elevation="12dp">
+        <ImageView android:id="@+id/backdrop" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="fitXY" android:visibility="gone"/>
+        <View android:id="@+id/tint" android:layout_width="match_parent" android:layout_height="match_parent" android:visibility="gone"/>
+        <include layout="@layout/sheet_form"/>
+        <include layout="@layout/sheet_detail"/>
+        <TextView android:id="@+id/ghost" android:tag="ink" android:layout_width="match_parent" android:layout_height="match_parent" android:gravity="center" android:text="@string/m_add" android:textSize="17sp" android:textStyle="bold" android:visibility="gone"/>
+        <LinearLayout android:id="@+id/menuPop" android:tag="menu" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="bottom|end" android:layout_marginBottom="86dp" android:layout_marginEnd="22dp" android:orientation="vertical" android:padding="8dp" android:visibility="gone">
+            <TextView android:id="@+id/mPost" android:tag="ink" android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="14dp" android:text="@string/postpone" android:textSize="15sp"/>
+            <TextView android:id="@+id/mAdv" android:tag="ink" android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="14dp" android:text="@string/advance" android:textSize="15sp"/>
+            <TextView android:id="@+id/mEdit" android:tag="ink" android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="14dp" android:text="@string/edit" android:textSize="15sp"/>
+            <TextView android:id="@+id/mWord" android:tag="ink" android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="14dp" android:text="@string/new_word" android:textSize="15sp"/>
+            <TextView android:id="@+id/mPdf" android:tag="ink" android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="14dp" android:text="@string/new_pdf" android:textSize="15sp"/>
+        </LinearLayout>
+    </FrameLayout>
+
+    <FrameLayout android:id="@+id/selPop" android:layout_width="64dp" android:layout_height="64dp" android:layout_gravity="top|start" android:visibility="gone">
+        <LinearLayout android:id="@+id/popOpts" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:padding="8dp" android:alpha="0">
+            <TextView android:id="@+id/sAdd" android:tag="ink" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:gravity="center_vertical" android:paddingLeft="16dp" android:text="@string/m_add" android:textSize="16sp"/>
+            <TextView android:id="@+id/sQuick" android:tag="ink" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:gravity="center_vertical" android:paddingLeft="16dp" android:text="@string/m_quick" android:textSize="16sp"/>
+            <TextView android:id="@+id/sSel" android:tag="ink" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:gravity="center_vertical" android:paddingLeft="16dp" android:text="@string/m_selcard" android:textSize="16sp"/>
+        </LinearLayout>
+        <TextView android:id="@+id/popCheck" android:tag="ink" android:layout_width="64dp" android:layout_height="64dp" android:layout_gravity="bottom|end" android:gravity="center" android:text="•••" android:textSize="22sp" android:textStyle="bold"/>
+    </FrameLayout>
+</FrameLayout>

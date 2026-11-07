@@ -1,0 +1,108 @@
+<resources>
+    <string name="all_clear">Semua beres</string>
+    <string name="n_todo">%d tugas</string>
+    <string name="finished">Selesai</string>
+    <string name="add_work">tambah tugas</string>
+    <string name="type">Jenis</string>
+    <string name="homework">PR</string>
+    <string name="exam">Ujian mendatang</string>
+    <string name="subject">Mata pelajaran</string>
+    <string name="subject_hint">mis. Esai Biologi</string>
+    <string name="deadline">Tenggat</string>
+    <string name="notes">Catatan</string>
+    <string name="notes_hint">Apa yang perlu dikerjakan?</string>
+    <string name="files">Berkas</string>
+    <string name="files_hint">Ketuk untuk memilih berkas, atau jatuhkan di sini</string>
+    <string name="add">Tambah</string>
+    <string name="save">Simpan</string>
+    <string name="finish_work">Selesaikan tugas</string>
+    <string name="restore">Pulihkan</string>
+    <string name="attached">Berkas terlampir</string>
+    <string name="no_files">Tidak ada berkas</string>
+    <string name="remove">Hapus</string>
+    <string name="remove_n">Hapus %d</string>
+    <string name="cancel">Batal</string>
+    <string name="m_all">Hapus semua tugas selesai</string>
+    <string name="m_sel">Hapus tugas selesai terpilih</string>
+    <string name="m_ditch">Buang beberapa tugas terpilih</string>
+    <string name="postpone">Tunda satu hari</string>
+    <string name="advance">Majukan satu hari</string>
+    <string name="edit">Ubah</string>
+    <string name="required">Wajib diisi</string>
+    <string name="due_today">Tenggat hari ini</string>
+    <string name="due_tomorrow">Tenggat besok</string>
+    <string name="due_in">Tenggat %d hari lagi</string>
+    <string name="overdue_1">Terlambat 1 hari</string>
+    <string name="overdue_n">Terlambat %d hari</string>
+    <string name="settings">Pengaturan</string>
+    <string name="language">Bahasa</string>
+    <string name="appearance">Tampilan</string>
+    <string name="light_mode">Mode terang</string>
+    <string name="background">Warna latar</string>
+    <string name="reminders">Pengingat</string>
+    <string name="rem_off">Mati</string>
+    <string name="rem_due">Pada hari tenggat</string>
+    <string name="rem_before">Sehari sebelum dan pada hari tenggat</string>
+    <string name="rem_daily">Setiap hari sampai selesai</string>
+    <string name="rem_time">Waktu pengingat: %s</string>
+    <string name="allow_notif">Izinkan notifikasi</string>
+    <string name="allow_exact">Izinkan waktu pengingat tepat</string>
+    <string name="storage">Penyimpanan</string>
+    <string name="folder_none">Belum ada folder</string>
+    <string name="folder_set">Folder: %s</string>
+    <string name="choose_folder">Pilih folder</string>
+    <string name="change_folder">Ganti folder</string>
+    <string name="need_folder">Pilih folder dulu agar Memorius bisa menyimpan berkas Anda di sana.</string>
+    <string name="new_word">Dokumen Word baru</string>
+    <string name="new_pdf">PDF baru</string>
+    <string name="doc_title">Judul dokumen</string>
+    <string name="untitled">Tanpa judul</string>
+    <string name="saved">Tersimpan</string>
+    <string name="save_fail">Gagal menyimpan</string>
+    <string name="open_fail">Tidak bisa membuka berkas ini</string>
+    <string name="pdf_readonly">Teks PDF tidak dapat diedit di aplikasi. Buat PDF baru sebagai gantinya.</string>
+    <string name="select_text">Pilih teks dulu</string>
+    <string name="notif_channel">Pengingat</string>
+    <string name="tab_card">Kartu</string>
+    <string name="tab_progress">Progres</string>
+    <string name="tab_schedule">Jadwal</string>
+    <string name="tab_note">Catatan</string>
+    <string name="notes_title">Catatan</string>
+    <string name="m_add">Tambah Tugas</string>
+    <string name="m_quick">Hapus Cepat</string>
+    <string name="m_selcard">Hapus Kartu Terpilih</string>
+    <string name="empty_cards">Hmm, sepertinya semua tugasmu sudah selesai.. atau belum?</string>
+    <string name="sched_empty">Belum ada jadwal</string>
+    <string name="st_finished">Selesai</string>
+    <string name="st_todo">Belum selesai</string>
+    <string name="st_overdue">Terlambat</string>
+    <string name="st_today">Tenggat hari ini</string>
+    <string name="g_today">Hari ini</string>
+    <string name="g_tomorrow">Besok</string>
+    <string name="g_overdue">Terlambat</string>
+    <string name="new_note">Catatan baru</string>
+    <string name="search_notes">Cari catatan</string>
+    <string name="no_notes">Belum ada catatan</string>
+    <string name="del_note">Hapus catatan ini?</string>
+    <string name="experimental">Eksperimental</string>
+    <string name="exp_side">Kartu menyamping</string>
+    <string name="exp_group">Kelompokkan kartu per tanggal</string>
+    <string name="export_docx">Ke .docx</string>
+    <string name="export_pdf">Ke PDF</string>
+    <string name="exported">Terekspor</string>
+    <string-array name="quotes">
+        <item>Carpe diem</item>
+        <item>Awal yang baik adalah setengah dari pekerjaan</item>
+        <item>Sedikit demi sedikit, lama-lama menjadi bukit</item>
+        <item>Selesai lebih baik daripada sempurna</item>
+        <item>Perjalanan seribu mil dimulai dari satu langkah</item>
+        <item>Keberuntungan berpihak pada yang siap</item>
+        <item>Pelan tapi pasti</item>
+        <item>Usaha hari ini adalah kemudahan esok</item>
+        <item>Jangan tunggu inspirasi; mulai saja</item>
+        <item>Buat berfungsi dulu, lalu perbaiki</item>
+        <item>Roma tidak dibangun dalam sehari</item>
+        <item>Waktu terbaik untuk memulai adalah sekarang</item>
+        <item>Satu hal dalam satu waktu</item>
+    </string-array>
+</resources>
